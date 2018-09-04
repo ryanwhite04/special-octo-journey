@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+  </head>
+  <body>
+    <h2>Prices of stuff</h2>
+    <script type="module">
+
+      const pharmacies = {
+        'ePharmacy': {
+          protocol: 'https',
+          domain: 'epharmacy.com.au',
+          path: 'product.asp?id=',
+          selector: '.ProductPage_PrescPrices_PriceTag',
+          api: 'https://www.epharmacy.com.au/inc_product_updater_json_shortlive.asp?ID='
+        },
+        'Chemist Warehouse': {
+          protocol: 'https',
+          domain: 'chemistwarehouse.com.au',
+          path: 'buy/',
+          selector: '.presc_boxprice',
+        },
+        // {
+        //   name: 'Greg\'s Chemist',
+        //   protocol: 'https',
+        //   domain: 'gregs.com.au',
+        //   path: 'catalogue/',
+        //   selector: '.presc_boxprice',
+        // }
+        'Chemist Di$count Centre': {
+          protocol: 'https',
+          domain: 'chemistdiscountcentre.com.au',
+          path: 'buy/',
+          selector: '.presc_boxprice',
+          api: `https://www.chemistdiscountcentre.com.au/breeze/frontend/Products?$filter=Sku eq '110050'`
+        }
+      ]
+
+      // https://www.chemistdiscountcentre.com.au/breeze/frontend/FilteredProducts
+      // #!/prod/110050/valdoxan-25mg-tablets-28
+      
+      const drugs = {
+        'Valdoxan': {
+          pharmacies: [
+            { name: 'ePharmacy', id: 62664 },
+            { name: 'Chemist Warehouse', id: 62664 },
+            { name: 'Chemist Di$count Centre', id: 110050 },
+          ]
+        }
+      }
+
+      async function getData({ pharmacies }) {
+        
+        return await Promise.all(pharmacies.map(async ({
+          name, protocol, domain, path, selector
+        }) => {
+          const html = await request(`${protocol}://${domain}/${path}${id}`).catch(console.error)
+          const $ = cheerio.load(html)
+          return $(selector).text().trim().split(/\s/)[0];
+        }))
+        
+      }
+      
+      getData(drugs['Valdoxan']).then(console.log)
+      
+    </script>
+  </body>
+</html>
